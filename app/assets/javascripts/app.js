@@ -2,47 +2,76 @@
 // App
 // ----------------------------------------
 
-var Crudangles = angular.module('Crudangles', ['templates'])
+var Crudangles = angular.module('Crudangles', ['ui.router', 'restangular'])
 
-.factory('PostService',
-  ['$http',
-  function($http) {
+.factory('_', ['$window', function($window) {
+  return $window._;
+}])
 
-    var _posts = [];
+// ----------------------------------------
+// Restangular
+// ----------------------------------------
 
+.config(['RestangularProvider', function(RestangularProvider) {
 
-    var PostService = {
-      posts: _posts
-    };
+  RestangularProvider.setBaseUrl('/api/v1');
+  RestangularProvider.setRequestSuffix('.json');
 
+}])
 
-    PostService.all = function() {
-      return $http({
-        url: 'api/v1/posts.json',
-        method: 'GET'
+// ----------------------------------------
+// Router
+// ----------------------------------------
+
+.config(['$urlRouterProvider', '$stateProvider',
+  function($urlRouterProvider, $stateProvider) {
+
+    $urlRouterProvider.otherwise('/posts');
+
+    $stateProvider
+      .state('posts', {
+        abstract: true,
+        url: '/posts',
+        template: '<div ui-view></div>',
+        controller: 'PostsCtrl',
+        resolve: {
+          posts: ['Restangular', function(Restangular) {
+            console.log('Getting posts...');
+            return Restangular.all('posts').getList();
+          }]
+        }
       })
-        .then(function(response) {
-          for (var i = 0; i < response.data.length; i++) {
-            var post = response.data[i];
-            _posts.push(post);
-          }
-          console.log(response);
-        }, function(response) {
-          console.error(response);
-        });
-    };
-
-
-    return PostService;
+      .state('posts.index', {
+        url: '',
+        templateUrl: '/templates/posts/index.html',
+        controller: 'PostsCtrl'
+      })
+      .state('posts.show', {
+        url: '/:id',
+        templateUrl: '/templates/posts/show.html',
+        controller: 'PostsCtrl'
+      });
 
   }])
 
-.controller('PostsCtrl',
-  ['$scope', 'PostService',
-  function($scope, PostService) {
+// ----------------------------------------
+// PostCtrl
+// ----------------------------------------
 
-    $scope.posts = PostService.posts;
-    PostService.all();
+.controller('PostsCtrl',
+  ['$scope', '_', 'posts', '$state',
+  function($scope, _, posts, $state) {
+
+    var o = {
+      "posts.index": function() {
+        $scope.posts = posts;
+      },
+      "posts.show": function() {
+        $scope.post = _.find(posts, function(post) {
+          return post.id === ~~$state.params.id;
+        });
+      }
+    }[$state.current.name]();
 
   }]);
 

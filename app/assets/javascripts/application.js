@@ -12,6 +12,8 @@
 //
 //= require jquery2
 //= require jquery_ujs
+//= require underscore
 //= require angular
-//= require angular-rails-templates
+//= require angular-ui-router
+//= require restangular
 //= require_tree .
