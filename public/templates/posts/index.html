@@ -1,4 +1,25 @@
-<div class="post" ng-repeat="post in posts">
+<header class="page-header">
+  <h2>Create Post</h2>
+</header>
+
+<form id="post-form" name="postForm">
+  <div class="form-group">
+    <input type="text" class="form-control" placeholder="Title" ng-model="postParams.title" ng-maxlength="1">
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" placeholder="Author" ng-model="postParams.author" ng-maxlength="1">
+  </div>
+  <div class="form-group">
+    <textarea class="form-control" placeholder="Write..." ng-model="postParams.body" ng-maxlength="1"></textarea>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Create Post" class="btn btn-success" ng-click="createPost()" ng-if="postForm.$valid">
+  </div>
+</form>
+
+<p class="text-danger" ng-if="!posts.length">No Posts</p>
+
+<div class="post" ng-repeat="post in posts" ng-if="posts.length">
   <header class="page-header">
     <h1>
       <a ui-sref="posts.show({ id: post.id })">
@@ -6,6 +27,8 @@
       </a>
       <br>
       <small>by {{ post.author }}</small>
+      <br>
+      <small>Posted on: {{ post.created_at | date: 'EEEE d MMMM, yyyy' }}</small>
     </h1>
   </header>
 
@@ -15,3 +38,4 @@
     </div>
   </div>
 </div>
+

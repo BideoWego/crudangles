@@ -2,7 +2,7 @@ class PostsController < ApplicationController
   before_action :set_post, :except => [:index, :create]
 
   def index
-    @posts = Post.all
+    @posts = Post.order(:created_at => :desc)
     respond_to do |format|
       format.json { render :json => resource_to_json, :status => 200 }
     end

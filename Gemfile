@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'hirb'
 
 gem 'angularjs-rails'
-gem 'angular-rails-templates'
 gem 'angular_rails_csrf'
 
 group :test do

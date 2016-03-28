@@ -16,4 +16,14 @@
 //= require angular
 //= require angular-ui-router
 //= require restangular
-//= require_tree .
+
+//= require comments
+//= require posts
+//= require static_pages
+
+//= require app
+//= require services/underscore-service
+//= require configs/restangular-config
+//= require configs/router-config
+//= require services/action-service
+//= require controllers/posts-ctrl
