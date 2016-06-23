@@ -21,10 +21,10 @@
 
   <form id="comment-form" name="commentForm">
     <div class="form-group">
-      <input type="text" class="form-control" placeholder="Author" ng-model="commentParams.author" ng-minlength="100">
+      <input type="text" class="form-control" placeholder="Author" ng-model="commentParams.author">
     </div>
     <div class="form-group">
-      <input type="text" class="form-control" placeholder="Write..." ng-model="commentParams.body" ng-minlength="100">
+      <input type="text" class="form-control" placeholder="Write..." ng-model="commentParams.body">
     </div>
     <div class="form-group">
       <input type="submit" class="btn btn-success" value="Create Comment" ng-click="createComment()" ng-if="commentForm.$valid">

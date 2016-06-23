@@ -10,6 +10,8 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+
+
 //= require jquery2
 //= require jquery_ujs
 //= require underscore
@@ -22,8 +24,11 @@
 //= require static_pages
 
 //= require app
-//= require services/underscore-service
-//= require configs/restangular-config
-//= require configs/router-config
-//= require services/action-service
-//= require controllers/posts-ctrl
+//= require services/underscore_service
+//= require configs/restangular_config
+//= require configs/router_config
+//= require services/comment_service
+//= require services/post_service
+//= require controllers/posts/posts_ctrl
+//= require controllers/posts/posts_index_ctrl
+//= require controllers/posts/posts_show_ctrl

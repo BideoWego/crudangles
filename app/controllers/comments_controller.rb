@@ -48,7 +48,7 @@ class CommentsController < ApplicationController
     unless @comment
       flash.now[:error] = 'Could not find comment'
       respond_to do |format|
-        format.json { render :json => @comment, :stats => 422 }
+        format.json { render :json => @comment, :status => 422 }
       end
     end
   end
