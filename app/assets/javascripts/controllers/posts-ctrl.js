@@ -6,6 +6,7 @@ Crudangles.controller('PostsCtrl',
   ['_', '$scope', '$state', 'Restangular', 'posts', 'ActionService',
   function(_, $scope, $state, Restangular, posts, ActionService) {
 
+
     var _createPost = function(post) {
       return Restangular.all('posts').post({
         post: {
