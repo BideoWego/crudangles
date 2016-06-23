@@ -4,16 +4,16 @@
 
 <form id="post-form" name="postForm">
   <div class="form-group">
-    <input type="text" class="form-control" placeholder="Title" ng-model="postParams.title">
+    <input type="text" name="title" class="form-control" placeholder="Title" ng-model="postParams.title" required>
   </div>
   <div class="form-group">
-    <input type="text" class="form-control" placeholder="Author" ng-model="postParams.author">
+    <input type="text" name="author" class="form-control" placeholder="Author" ng-model="postParams.author" required>
   </div>
   <div class="form-group">
-    <textarea class="form-control" placeholder="Write..." ng-model="postParams.body"></textarea>
+    <textarea name="body" class="form-control" placeholder="Write..." ng-model="postParams.body" required></textarea>
   </div>
   <div class="form-group">
-    <input type="submit" value="Create Post" class="btn btn-success" ng-click="createPost()" ng-if="postForm.$valid">
+    <input type="submit" value="Create Post" class="btn btn-success" ng-click="createPost()" ng-show="postForm.$valid">
   </div>
 </form>
 
