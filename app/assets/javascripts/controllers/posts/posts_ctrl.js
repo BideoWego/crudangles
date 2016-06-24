@@ -3,10 +3,10 @@
 // ----------------------------------------
 
 Crudangles.controller('PostsCtrl',
-  ['$scope', '$state', 'PostService',
-  function($scope, $state, PostService) {
-    
-    $scope.posts = PostService.all();
+  ['$scope', 'posts',
+  function($scope, posts) {
+
+    $scope.posts = posts;
 
   }]);
 

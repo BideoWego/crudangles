@@ -14,15 +14,17 @@
 ActiveRecord::Schema.define(version: 20160326215828) do
 
   create_table "comments", force: :cascade do |t|
-    t.string   "author",     null: false
-    t.text     "body",       null: false
-    t.integer  "post_id",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "author",                 null: false
+    t.text     "body",                   null: false
+    t.integer  "score",      default: 0
+    t.integer  "post_id",                null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   add_index "comments", ["author"], name: "index_comments_on_author"
   add_index "comments", ["post_id"], name: "index_comments_on_post_id"
+  add_index "comments", ["score"], name: "index_comments_on_score"
 
   create_table "posts", force: :cascade do |t|
     t.string   "title",      null: false

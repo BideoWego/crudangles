@@ -1,6 +1,20 @@
 class CommentsController < ApplicationController
   before_action :set_comment, :except => [:index, :create]
 
+  def index
+    @comments = Comment.order(:created_at => :desc).first(20)
+    respond_to do |format|
+      format.json { render :json => @comments, :status => 200 }
+    end
+  end
+
+
+  def show
+    respond_to do |format|
+      format.json { render :json => @comment, :status => 200 }
+    end
+  end
+
 
   def create
     @comment = Comment.new(comment_params)
@@ -58,7 +72,8 @@ class CommentsController < ApplicationController
     params.require(:comment).permit(
       :body,
       :author,
-      :post_id
+      :post_id,
+      :score
     )
   end
 

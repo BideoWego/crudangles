@@ -10,7 +10,47 @@ Crudangles.factory('PostService',
     // Private
     // ----------------------------------------
 
+    Restangular.extendCollection('posts', function(collection) {
+
+      collection.all = _all;
+      collection.find = _find;
+      collection.refreshOne = _refreshOne;
+      collection.refreshAll = _refreshAll;
+      collection.create = _create;
+
+      return collection;
+    });
+
+
+    Restangular.extendModel('posts', function(model) {
+
+      model.createComment = function(params) {
+        params.postId = model.id;
+        return CommentService.create(params)
+          .then(function(response) {
+            model.comments.push(response);
+            return response;
+          });
+      };
+
+      return model;
+    });
+
+
     var _posts;
+
+
+    var _restangularizePostComments = function(post) {
+      post.comments = Restangular
+          .restangularizeCollection(post, post.comments, 'comments');
+    };
+
+
+    var _restangularizePostsComments = function(posts) {
+      _.each(posts, function(post) {
+        _restangularizePostComments(post);
+      });
+    };
 
 
     var _createPost = function(params) {
@@ -22,8 +62,9 @@ Crudangles.factory('PostService',
         }
       })
         .then(function(response) {
-          console.log(response);
-          _posts.unshift(response);
+          _posts.then(function(posts) {
+            posts.unshift(response);
+          });
           return _posts;
         });
     };
@@ -40,31 +81,54 @@ Crudangles.factory('PostService',
     };
 
 
-    Restangular.extendCollection('posts', function(collection) {
+    var _refreshOne = function(id) {
+      var index = _.findIndex(_posts, function(post) {
+        return post.id === id;
+      });
 
-      collection.create = _createPost;
-      collection.find = _findPost;
-
-      return collection;
-    });
-
-
-    Restangular.extendModel('posts', function(model) {
-
-      model.createComment = function(params) {
-        params.postId = model.id;
-        console.log(params);
-        return CommentService.create(params)
-          .then(function(response) {
-            console.log(response);
-            model.comments.push(response);
-            return response;
+      if (index >= 0) {
+        return _posts[index];
+      } else {
+        return _posts[index] = Restangular.one('posts', id).get()
+          .then(function(post) {
+            _restangularizePostComments(post);
+            return post;
           });
-      };
+      }
+    };
 
-      return model;
-    });
 
+    var _refreshAll = function() {
+      if (_posts) {
+        Restangular.all('posts').getList()
+          .then(function(response) {
+            _restangularizePostsComments(response);
+            angular.copy(response, _posts);
+          });
+      } else {
+        _posts = Restangular.all('posts').getList()
+          .then(function(posts) {
+            _restangularizePostsComments(posts);
+            return posts;
+          });
+      }
+      return _posts;
+    };
+
+
+    var _all = function() {
+      return PostService.refreshAll();
+    };
+
+
+    var _find = function(id) {
+      return _findPost(id);
+    };
+
+
+    var _create = function(params) {
+      return _createPost(params);
+    };
 
     // ----------------------------------------
     // Public
@@ -73,47 +137,11 @@ Crudangles.factory('PostService',
     var PostService = {};
 
 
-    PostService.all = function() {
-      return _posts ? _posts : PostService.refreshAll();
-    };
-
-
-    PostService.find = function(id) {
-      return _findPost(id);
-    };
-
-
-    PostService.refreshOne = function(id) {
-      var index = _.findIndex(_posts, function(post) {
-        return post.id === id;
-      });
-      if (index >= 0) {
-        return _posts[index];
-      } else {
-        return _posts[index] = Restangular.one('posts', id).get().$object;
-      }
-    };
-
-
-    PostService.refreshAll = function() {
-      if (_posts) {
-        _posts.splice(0);
-        Restangular.all('posts').getList()
-          .then(function(response) {
-            for (var i = 0; i < response.length; i++) {
-              _posts.push(response[i]);
-            }
-          });
-      } else {
-        _posts = Restangular.all('posts').getList().$object;
-      }
-      return _posts;
-    };
-
-
-    PostService.create = function(params) {
-      return _createPost(params);
-    };
+    PostService.all = _all;
+    PostService.find = _find;
+    PostService.refreshOne = _refreshOne;
+    PostService.refreshAll = _refreshAll;
+    PostService.create = _create;
 
     return PostService;
 

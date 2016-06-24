@@ -2,8 +2,10 @@ Rails.application.routes.draw do
 
   scope :api do
     scope :v1 do
-      resources :posts
-      resources :comments, :only => [:create, :update, :destroy]
+      resources :posts do
+        resources :comments, :only => [:update]
+      end
+      resources :comments, :except => [:new, :edit]
     end
   end
 

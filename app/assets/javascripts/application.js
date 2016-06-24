@@ -32,3 +32,8 @@
 //= require controllers/posts/posts_ctrl
 //= require controllers/posts/posts_index_ctrl
 //= require controllers/posts/posts_show_ctrl
+//= require controllers/comments/recent_comments_ctrl
+
+
+
+

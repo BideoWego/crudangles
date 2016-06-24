@@ -10,22 +10,54 @@ Crudangles.factory('CommentService',
     // Private
     // ----------------------------------------
 
+    Restangular.extendCollection('comments', function(collection) {
+
+      collection.all = _all;
+      collection.find = _findComment;
+      collection.refreshOne = _refreshOne;
+      collection.refreshAll = _refreshAll;
+      collection.create = _create;
+
+      return collection;
+    });
+
+
+    Restangular.extendModel('comments', function(model) {
+
+      model.upvote = function() {
+        model.score += 1;
+        return model.put();
+      };
+
+      model.downvote = function() {
+        model.score -= 1;
+        return model.put();
+      };
+
+      return model;
+    });
+
+
     var _comments;
 
 
-    // ----------------------------------------
-    // Public
-    // ----------------------------------------
-
-    var CommentService = {};
-
-
-    CommentService.all = function() {
-      return _comments ? _comments : CommentService.refreshAll();
+    var _all = function() {
+      return _refreshAll();
     };
 
 
-    CommentService.find = function(id) {
+    var _createComment = function(params) {
+      return Restangular.all('comments').post({
+        comment: {
+          author: params.author,
+          body: params.body,
+          post_id: params.postId
+        }
+      });
+    };
+
+
+    var _findComment = function(id) {
       id = parseInt(id);
       var result = _.find(_comments, function(comment) {
         if (comment.id === id) {
@@ -36,26 +68,24 @@ Crudangles.factory('CommentService',
     };
 
 
-    CommentService.refreshOne = function(id) {
+    var _refreshOne = function(id) {
       var index = _.findIndex(_comments, function(comment) {
         return comment.id === id;
       });
       if (index >= 0) {
         return _comments[index];
       } else {
-        return _comments[index] = Restangular.one('comments', id).get().$object;
+        return _comments[index] = Restangular.one('comments', id).get();
       }
     };
 
 
-    CommentService.refreshAll = function() {
+    var _refreshAll = function() {
       if (_comments) {
-        _comments.splice(0);
         Restangular.all('comments').getList()
           .then(function(response) {
-            for (var i = 0; i < response.length; i++) {
-              _comments.push(response[i]);
-            }
+            console.log(_comments);
+            angular.copy(response, _comments);
           });
       } else {
         _comments = Restangular.all('comments').getList().$object;
@@ -64,15 +94,22 @@ Crudangles.factory('CommentService',
     };
 
 
-    CommentService.create = function(params) {
-      return Restangular.all('comments').post({
-        comment: {
-          author: params.author,
-          body: params.body,
-          post_id: params.postId
-        }
-      });
+    var _create = function(params) {
+      return _createComment(params);
     };
+
+
+    // ----------------------------------------
+    // Public
+    // ----------------------------------------
+
+    var CommentService = {};
+
+    CommentService.all = _all;
+    CommentService.find = _findComment;
+    CommentService.refreshOne = _refreshOne;
+    CommentService.refreshAll = _refreshAll;
+    CommentService.create = _create;
 
     return CommentService;
 

@@ -3,11 +3,8 @@
 // ----------------------------------------
 
 Crudangles.controller('PostsIndexCtrl',
-  ['$controller', '$scope', '$state',
-  function($controller, $scope, $state) {
-    
-    $controller('PostsCtrl', { $scope: $scope });
-
+  ['$scope', '$state', 'posts',
+  function($scope, $state, posts) {
 
     $scope.createPost = function() {
       $scope.posts.create($scope.postParams)

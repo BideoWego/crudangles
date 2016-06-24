@@ -1,0 +1,23 @@
+<header class="page-header">
+  <h2>Recent Comments</h2>
+</header>
+
+
+<p class="text-danger" ng-if="!recentComments.length">No recent comments</p>
+
+
+<div ng-repeat="comment in recentComments | orderBy: '-created_at'">
+  <h3>
+    <a href="" ng-click="upvoteComment(comment.id)">&uparrow;</a>
+    <a href="" ng-click="downvoteComment(comment.id)">&downarrow;</a>
+    {{ comment.score }}
+    |
+    {{ comment.author }}
+    <br>
+    <small>Commented on: {{ comment.created_at | date: 'EEEE d MMMM, yyyy' }}</small>
+  </h3>
+  <blockquote>{{ comment.body }}</blockquote>
+</div>
+
+
+
